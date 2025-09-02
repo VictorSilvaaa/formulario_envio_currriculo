@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "505920b1-4d68-474d-bf9c-7afc4115a383",
+		"name": "formulario_curriculos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33463771"
+	},
+	"item": [
+		{
+			"name": "Testar Conexão",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/teste",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"teste"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Salvar Curriculo",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Escolaridades",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
