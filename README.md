@@ -48,19 +48,28 @@ docker compose up -d
 ```
 Isso irá subir todos os serviços necessários: backend (Laravel), frontend (Vue.js), banco de dados (MySQL), nginx, mailhog e phpmyadmin.
 
-#### Rodando migrations e seeders dentro do container
+#### Instalando dependências do frontend dentro do container
+Para acessar o container do frontend:
+```sh
+docker exec -it vue-frontend sh
+```
+Dentro do container, rode:
+```sh
+npm install
+```
 
-Após subir os containers, acesse o container do backend:
+#### Instalando dependências do backend dentro do container
+Para acessar o container do backend:
 ```sh
 docker exec -it laravel-backend bash
 ```
 Dentro do container, rode:
 ```sh
+composer install
 php artisan key:generate
 php artisan migrate --seed
 ```
 Isso irá criar as tabelas e popular as tabelas necessárias.
-
 ---
 
 ## 🌐 Rotas de acesso
