@@ -77,7 +77,16 @@ services:
       - app-network
     depends_on:
       - db
-
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    restart: unless-stopped
+    ports:
+      - "8025:8025"   # Interface web
+      - "1025:1025"   # Porta SMTP
+    networks:
+      - app-network
+      
 networks:
   app-network:
 

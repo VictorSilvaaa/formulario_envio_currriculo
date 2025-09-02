@@ -23,10 +23,13 @@
           />
           <VTextField
             v-model="telefone"
-            label="Telefone"
+            label="Telefone/Celular"
             :error-messages="erroTelefone"
             prepend-inner-icon="mdi-phone"
             required
+            @input="onTelefoneInput"
+            maxlength="15"
+            placeholder="(99) 99999-9999"
           />
           <VTextField
             v-model="cargoDesejado"
@@ -41,6 +44,8 @@
             label="Escolaridade"
             :error-messages="erroEscolaridade"
             prepend-inner-icon="mdi-school"
+            item-title="titulo"
+            item-value="id"
             required
           />
           <VTextarea
@@ -80,12 +85,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useField, useForm } from 'vee-validate'
 import Swal from 'sweetalert2'
-import { enviarCurriculo } from '@services/curriculoService'
-import { Curriculo } from '@types/curriculo'
+import { enviarCurriculo } from '@/services/curriculoService'
+import { Curriculo } from '@/types/curriculo'
 import { curriculoSchema } from '@/schemas/curriculoSchema'
+import { buscarOpcoesEscolaridades } from '@/services/OpcoesService'
 
 // useForm do VeeValidate
 const { validate, resetForm } = useForm<Curriculo>({
@@ -96,40 +102,74 @@ const { validate, resetForm } = useForm<Curriculo>({
 const { value: nome, errorMessage: erroNome } = useField<string>('nome')
 const { value: email, errorMessage: erroEmail } = useField<string>('email')
 const { value: telefone, errorMessage: erroTelefone } = useField<string>('telefone')
-const { value: cargoDesejado, errorMessage: erroCargoDesejado } = useField<string>('cargoDesejado')
-const { value: escolaridade, errorMessage: erroEscolaridade } = useField<string>('escolaridade')
+const { value: cargoDesejado, errorMessage: erroCargoDesejado } = useField<string>('cargo_desejado')
+const { value: escolaridade, errorMessage: erroEscolaridade } = useField<number>('escolaridade_id')
 const { value: observacoes } = useField<string>('observacoes')
 const { value: arquivo, errorMessage: erroArquivo } = useField<File | null>('arquivo')
 
 const loading = ref(false)
 const formRef = ref()
-const escolaridadeOptions = ['Fundamental', 'Médio', 'Superior', 'Pós-graduação']
+const escolaridadeOptions = ref<{ id: number; titulo: string }[]>([])
+
+// Carregar opções de escolaridade do backend
+onMounted(async () => {
+  try {
+    const { data } = await buscarOpcoesEscolaridades()
+    escolaridadeOptions.value = data
+  } catch (err) {
+    console.error('Erro ao buscar escolaridades:', err)
+    Swal.fire({
+      title: 'Erro',
+      text: 'Falha ao carregar opções de escolaridade.',
+      icon: 'error',
+      showCloseButton: true,
+      timer: 4000,
+    })
+  }
+})
+
+// Máscara para telefone brasileiro (com DDD)
+function onTelefoneInput(e: Event) {
+  let valor = (e.target as HTMLInputElement).value.replace(/\D/g, '')
+  if (valor.length > 11) valor = valor.slice(0, 11)
+  if (valor.length >= 2) {
+    valor = valor.replace(/^(\d{2})(\d*)/, '($1) $2')
+    if (valor.replace(/\D/g, '').length === 11) {
+      valor = valor.replace(/^(\(\d{2}\)\s)(\d{5})(\d{4})$/, '$1$2-$3')
+    } else if (valor.replace(/\D/g, '').length === 10) {
+      valor = valor.replace(/^(\(\d{2}\)\s)(\d{4})(\d{4})$/, '$1$2-$3')
+    }
+  }
+  telefone.value = valor
+}
 
 // Função chamada no submit
 const submitForm = async () => {
-  const result = await validate() // valida todos os campos
+   const result = await validate()
 
   if (!result.valid) {
-    // Se houver erros, mostra Swal e os erros aparecem nos campos automaticamente
+    // Extrai os erros de cada campo
+    const mensagensErros = Object.values(result.errors).flat().join('\n')
+
     Swal.fire({
       title: 'Campos inválidos',
-      text: 'Por favor, verifique os campos e preencha corretamente.',
+      html: mensagensErros.replace(/\n/g, '<br>'), // converte quebras de linha em <br> para HTML
       icon: 'warning',
       showCloseButton: true,
-      timer: 3000,
+      timer: 5000,
     })
     return
   }
 
-  // Se todos os campos forem válidos, envia o formulário
+  // Cria objeto tipado
   const dados: Curriculo = {
     nome: nome.value,
     email: email.value,
-    telefone: telefone.value,
-    cargoDesejado: cargoDesejado.value,
-    escolaridade: escolaridade.value,
+    telefone: telefone.value.replace(/\D/g, ''),
+    cargo_desejado: cargoDesejado.value,
+    escolaridade_id: escolaridade.value,
     observacoes: observacoes.value,
-    arquivo: arquivo.value,
+    arquivo: arquivo.value!,
   }
 
   try {
@@ -145,7 +185,7 @@ const submitForm = async () => {
     Swal.close()
     Swal.fire({
       title: 'Sucesso',
-      text: 'Currículo enviado com sucesso! Uma cópia foi enviada para seu e-mail.',
+      text: 'Currículo enviado com sucesso! Um e-mail de confirmação da sua inscrição foi enviado.',
       icon: 'success',
       showCloseButton: true,
       timer: 3000,
