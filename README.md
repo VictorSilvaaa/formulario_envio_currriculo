@@ -33,7 +33,7 @@ O sistema registra os dados do candidato, armazena o currículo e dispara um e-m
 
 ### 1. Clonando o projeto
 ```sh
-git clone https://github.com/SEU_USUARIO/formulario_envio_currriculo.git
+https://github.com/VictorSilvaaa/formulario_envio_currriculo.git
 cd formulario_envio_currriculo
 ```
 ### 3. Configurando variáveis de ambiente
