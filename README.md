@@ -1,8 +1,8 @@
 
 # 📌 Formulário de Envio de Currículos
 
-Este projeto permite o envio de currículos via formulário web, com validação, armazenamento em banco de dados, envio de e-mail de comprovante e testes automatizados.
-
+- Este projeto permite o envio de currículos via formulário web, com validação, armazenamento em banco de dados, envio de e-mail de comprovante e testes automatizados.
+- <img width="200" height="400" alt="{C4C99159-74B3-4C3D-8A3F-6ABBC0ECD6B8}" src="https://github.com/user-attachments/assets/162bdf0f-f0e8-4f5c-89d5-39e249905e99" />
 ---
 
 ## 🚀 Descrição do Projeto
