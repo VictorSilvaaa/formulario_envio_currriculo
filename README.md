@@ -20,6 +20,8 @@ O sistema registra os dados do candidato, armazena o currículo e dispara um e-m
   - Observações (opcional)
   - Arquivo (.doc, .docx, .pdf, até 1MB)
   - Data/hora do envio (automática)
+  - Ip (automática)
+  
 - Validação completa dos dados
 - Armazenamento em banco relacional
 - Envio de e-mail de comprovante
