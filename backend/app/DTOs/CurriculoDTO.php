@@ -14,6 +14,7 @@ class CurriculoDTO
         public int $escolaridade_id,
         public ?string $observacoes,
         public string $arquivo,
+        public ?string $ip = null, 
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -25,7 +26,8 @@ class CurriculoDTO
             cargo_desejado: $request->input('cargo_desejado'),
             escolaridade_id: (int) $request->input('escolaridade_id'),
             observacoes: $request->input('observacoes'),
-            arquivo: $request->file('arquivo')?->store('curriculos', 'public') ?? ''
+            arquivo: $request->file('arquivo')?->store('curriculos', 'public') ?? '',
+            ip: $request->ip(), // pega o IP da requisição
         );
     }
 
@@ -39,6 +41,7 @@ class CurriculoDTO
             escolaridade_id: $curriculo->escolaridade_id,
             observacoes: $curriculo->observacoes,
             arquivo: $curriculo->arquivo,
+            ip: $curriculo->ip ?? null, 
         );
     }
 }

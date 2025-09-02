@@ -13,6 +13,7 @@ class Curriculo extends Model
         'escolaridade_id',
         'arquivo',
         'observacoes',
+        'ip'
     ];
 
     protected $table = 'curriculos';

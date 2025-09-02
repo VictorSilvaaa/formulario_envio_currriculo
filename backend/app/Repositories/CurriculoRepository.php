@@ -10,6 +10,7 @@ class CurriculoRepository
     {
         return Curriculo::create([
             'nome' => $dto->nome,
+            'ip' => $dto->ip,
             'email' => $dto->email,
             'telefone' => $dto->telefone,
             'cargo_desejado' => $dto->cargo_desejado,
